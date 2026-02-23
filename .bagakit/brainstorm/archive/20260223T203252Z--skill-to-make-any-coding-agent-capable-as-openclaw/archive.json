@@ -1,0 +1,38 @@
+{
+  "version": 2,
+  "status": "complete",
+  "created_at": "2026-02-23T20:37:18Z",
+  "topic": "skill to make any coding agent capable as openclaw",
+  "source_artifact": ".bagakit/brainstorm/runs/20260223T203252Z--skill-to-make-any-coding-agent-capable-as-openclaw",
+  "archived_artifact": ".bagakit/brainstorm/archive/20260223T203252Z--skill-to-make-any-coding-agent-capable-as-openclaw",
+  "artifact_moved": true,
+  "driver": {
+    "selected": "local",
+    "detected": [],
+    "feat_id": null,
+    "change_id": null
+  },
+  "handoff": {
+    "action": {
+      "target": "local-outcome",
+      "path": ".bagakit/brainstorm/outcome/brainstorm-handoff-skill-to-make-any-coding-agent-capable-as-openclaw.md"
+    },
+    "memory": {
+      "target": "local-outcome-unified",
+      "path": ".bagakit/brainstorm/outcome/brainstorm-handoff-skill-to-make-any-coding-agent-capable-as-openclaw.md"
+    }
+  },
+  "checks": {
+    "required_stages_complete": true,
+    "input_and_qa_gate_clear": true,
+    "expert_forum_gate_clear": true,
+    "user_review_approved": true,
+    "action_destination_resolved": true,
+    "memory_destination_resolved": true,
+    "archive_written": true,
+    "artifact_moved_on_complete": true,
+    "experiment_count": 0,
+    "experiment_bonus_points": 0
+  },
+  "blocking_reasons": []
+}

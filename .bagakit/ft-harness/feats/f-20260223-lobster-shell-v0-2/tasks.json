@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "feat_id": "f-20260223-lobster-shell-v0-2",
+  "updated_at": "2026-02-23T22:56:27Z",
+  "tasks": [
+    {
+      "id": "T-001",
+      "title": "Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)",
+      "status": "todo",
+      "summary": "Scaffold event intake, one-shot loop trigger, memory recall/writeback, and result callback contract.",
+      "gate_result": null,
+      "last_gate_at": null,
+      "last_gate_commands": [],
+      "last_commit_hash": null,
+      "started_at": null,
+      "finished_at": null,
+      "updated_at": "2026-02-23T22:56:27Z",
+      "notes": []
+    }
+  ]
+}
