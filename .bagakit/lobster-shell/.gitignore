@@ -1,0 +1,4 @@
+state/*.sqlite
+logs/*.log
+runtime/*.log
+outbox/*.jsonl

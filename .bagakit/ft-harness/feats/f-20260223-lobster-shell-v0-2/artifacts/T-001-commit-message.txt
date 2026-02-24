@@ -1,0 +1,18 @@
+feat(f-20260223-lobster-shell-v0-2): task(T-001) bootstrap lobster-shell v0 bridges
+
+Plan:
+- Feat Goal: Convert current brainstorm into tracked feat and ship initial harness artifacts.
+- Task: Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)
+
+Check:
+- `bash .codex/skills/bagakit-feat-task-harness/scripts/feat-task-harness.sh validate-harness --root .` => PASS
+- `python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check` => PASS
+
+Learn:
+- Long-run runner depends on `BAGAKIT_LONG_RUN_SKILL_DIR`; local wrappers are required for repo-local skill paths.
+- `detection.status=ready` in execution-table is mandatory before any one-shot dispatch can pass `check_and_resume`.
+
+Feat-ID: f-20260223-lobster-shell-v0-2
+Task-ID: T-001
+Gate-Result: pass
+Task-Status: done

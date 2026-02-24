@@ -14,3 +14,17 @@ codex-locale-resume:
 	@echo "Running codex with CODEX_HOME=$(CODEX_HOME)"
 	codex -m gpt-5.3-codex -c model_reasoning_effort="xhigh" -c model_reasoning_summary_format=experimental --search --dangerously-bypass-approvals-and-sandbox resume 
 
+
+# BAGAKIT:LONGRUN:LAUNCHER:START
+ralphloop:
+	bash .bagakit/long-run/ralphloop-runner.sh
+.PHONY: ralphloop
+# BAGAKIT:LONGRUN:LAUNCHER:END
+
+lobster-shell-self-check:
+	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check
+.PHONY: lobster-shell-self-check
+
+lobster-shell-daemon:
+	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --host 127.0.0.1 --port 8765
+.PHONY: lobster-shell-daemon

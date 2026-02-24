@@ -1,0 +1,6 @@
+gate_time=2026-02-24T17:10:05Z
+project_type=non_ui
+result=pass
+commands:
+- bash .codex/skills/bagakit-feat-task-harness/scripts/feat-task-harness.sh validate-harness --root . => pass (0)
+- python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check => pass (0)

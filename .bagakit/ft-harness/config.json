@@ -39,6 +39,9 @@
       "default": "non_ui"
     },
     "ui_commands": [],
-    "non_ui_commands": []
+    "non_ui_commands": [
+      "bash .codex/skills/bagakit-feat-task-harness/scripts/feat-task-harness.sh validate-harness --root .",
+      "python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check"
+    ]
   }
 }

@@ -3,7 +3,7 @@
 JSON SSOT: `tasks.json`
 
 ## Task Checklist
-- [ ] T-001 Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)
+- [x] T-001 Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)
 
 ## Status Legend
 - todo

@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "generated_at": "2026-02-24T17:00:54Z",
+  "stack": {
+    "primary": "unknown",
+    "signals": []
+  },
+  "launcher": {
+    "route": "Makefile:ralphloop",
+    "command": "make ralphloop"
+  },
+  "agent": {
+    "hint": "sh",
+    "command": ""
+  },
+  "analysis_paths": [
+    ".bagakit"
+  ],
+  "quality_commands": []
+}

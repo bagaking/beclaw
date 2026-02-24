@@ -1,15 +1,15 @@
 {
   "version": 1,
   "generated_by": "bagakit-feat-task-harness",
-  "updated_at": "2026-02-23T22:56:27Z",
+  "updated_at": "2026-02-24T17:11:06Z",
   "feats": [
     {
       "feat_id": "f-20260223-lobster-shell-v0-2",
       "title": "Lobster shell v0 orchestration",
-      "status": "proposal",
+      "status": "done",
       "branch": "feat/f-20260223-lobster-shell-v0-2",
       "worktree_name": "wt-f-20260223-lobster-shell-v0-2",
-      "updated_at": "2026-02-23T22:56:27Z"
+      "updated_at": "2026-02-24T17:11:06Z"
     }
   ]
 }

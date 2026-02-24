@@ -4,31 +4,57 @@
   "title": "Lobster shell v0 orchestration",
   "slug": "lobster-shell-v0",
   "goal": "Convert current brainstorm into tracked feat and ship initial harness artifacts.",
-  "status": "proposal",
+  "status": "done",
   "base_ref": "main",
   "branch": "feat/f-20260223-lobster-shell-v0-2",
   "worktree_name": "wt-f-20260223-lobster-shell-v0-2",
   "worktree_path": ".worktrees/wt-f-20260223-lobster-shell-v0-2",
   "created_at": "2026-02-23T22:56:27Z",
-  "updated_at": "2026-02-23T22:56:27Z",
+  "updated_at": "2026-02-24T17:11:06Z",
   "current_task_id": null,
   "counters": {
     "gate_fail_streak": 0,
     "no_progress_rounds": 0,
-    "round_count": 0
+    "round_count": 1
   },
   "gate": {
-    "last_result": null,
-    "last_task_id": null,
-    "last_checked_at": null,
-    "last_check_commands": [],
-    "last_log_path": null
+    "last_result": "pass",
+    "last_task_id": "T-001",
+    "last_checked_at": "2026-02-24T17:10:05Z",
+    "last_check_commands": [
+      {
+        "command": "bash .codex/skills/bagakit-feat-task-harness/scripts/feat-task-harness.sh validate-harness --root .",
+        "exit_code": 0,
+        "status": "pass"
+      },
+      {
+        "command": "python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check",
+        "exit_code": 0,
+        "status": "pass"
+      }
+    ],
+    "last_log_path": ".bagakit/ft-harness/feats/f-20260223-lobster-shell-v0-2/artifacts/gate-20260224T171005Z.log"
   },
   "history": [
     {
       "at": "2026-02-23T22:56:27Z",
       "action": "feat_created",
       "detail": "base_ref=main"
+    },
+    {
+      "at": "2026-02-24T17:00:30Z",
+      "action": "task_started",
+      "detail": "T-001"
+    },
+    {
+      "at": "2026-02-24T17:10:05Z",
+      "action": "task_gate",
+      "detail": "T-001 => pass"
+    },
+    {
+      "at": "2026-02-24T17:11:06Z",
+      "action": "task_finished",
+      "detail": "T-001 => done"
     }
   ]
 }

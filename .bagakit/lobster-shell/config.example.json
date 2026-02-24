@@ -1,0 +1,8 @@
+{
+  "listen_host": "127.0.0.1",
+  "listen_port": 8765,
+  "shared_secret": "replace-me",
+  "feishu_reply_webhook": "",
+  "auto_run_once": true,
+  "memory_max_results": 5
+}

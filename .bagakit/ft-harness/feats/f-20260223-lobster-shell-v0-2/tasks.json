@@ -1,20 +1,31 @@
 {
   "version": 1,
   "feat_id": "f-20260223-lobster-shell-v0-2",
-  "updated_at": "2026-02-23T22:56:27Z",
+  "updated_at": "2026-02-24T17:11:06Z",
   "tasks": [
     {
       "id": "T-001",
       "title": "Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)",
-      "status": "todo",
+      "status": "done",
       "summary": "Scaffold event intake, one-shot loop trigger, memory recall/writeback, and result callback contract.",
-      "gate_result": null,
-      "last_gate_at": null,
-      "last_gate_commands": [],
+      "gate_result": "pass",
+      "last_gate_at": "2026-02-24T17:10:05Z",
+      "last_gate_commands": [
+        {
+          "command": "bash .codex/skills/bagakit-feat-task-harness/scripts/feat-task-harness.sh validate-harness --root .",
+          "exit_code": 0,
+          "status": "pass"
+        },
+        {
+          "command": "python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check",
+          "exit_code": 0,
+          "status": "pass"
+        }
+      ],
       "last_commit_hash": null,
-      "started_at": null,
-      "finished_at": null,
-      "updated_at": "2026-02-23T22:56:27Z",
+      "started_at": "2026-02-24T17:00:30Z",
+      "finished_at": "2026-02-24T17:11:06Z",
+      "updated_at": "2026-02-24T17:11:06Z",
       "notes": []
     }
   ]

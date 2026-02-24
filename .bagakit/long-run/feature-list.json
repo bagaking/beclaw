@@ -1,0 +1,48 @@
+{
+  "version": 1,
+  "project": {
+    "name": "replace-with-project-name",
+    "goal": "replace-with-project-goal"
+  },
+  "status_legend": {
+    "todo": "Ready to start",
+    "in_progress": "Currently being implemented",
+    "done": "Implemented and validated",
+    "blocked": "Cannot continue until unblocked"
+  },
+  "features": [
+    {
+      "id": "EXEC::bagakit-ft:f-20260223-lobster-shell-v0-2:T-001",
+      "title": "Lobster shell v0 orchestration / Bootstrap lobster-shell v0 control plane (inbox -> long-run -> memory -> reply)",
+      "status": "done",
+      "priority": 101,
+      "description": "Execution row from bagakit-ft (bagakit-ft:f-20260223-lobster-shell-v0-2:T-001).",
+      "dependencies": [],
+      "acceptance_criteria": [
+        "Source item reaches done/blocked: bagakit-ft:f-20260223-lobster-shell-v0-2:T-001",
+        "Validation checks pass for changed scope"
+      ],
+      "files_to_touch": [],
+      "commands": [],
+      "risks": [],
+      "why_now": "",
+      "updates": [
+        "2026-02-24T17:13:30Z synced from bk-execution-table"
+      ],
+      "managed_by": "execution-table",
+      "confidence": 0.16,
+      "evidence": [
+        "feat_status=done",
+        "task_status=done",
+        "selected_task=T-001",
+        "round_count=1",
+        "task_gate_result=pass"
+      ],
+      "evidence_count": 5,
+      "source_system": "bagakit-ft",
+      "source_item": "bagakit-ft:f-20260223-lobster-shell-v0-2:T-001",
+      "source_ref": ".bagakit/ft-harness/feats/f-20260223-lobster-shell-v0-2/tasks.json"
+    }
+  ],
+  "updated_at": "2026-02-24T17:13:30Z"
+}
