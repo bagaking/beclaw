@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generated_at": "2026-02-24T17:00:54Z",
+  "generated_at": "2026-02-25T06:46:48Z",
   "stack": {
     "primary": "unknown",
     "signals": []
@@ -10,10 +10,11 @@
     "command": "make ralphloop"
   },
   "agent": {
-    "hint": "sh",
+    "hint": "bash",
     "command": ""
   },
   "analysis_paths": [
+    "docs",
     ".bagakit"
   ],
   "quality_commands": []

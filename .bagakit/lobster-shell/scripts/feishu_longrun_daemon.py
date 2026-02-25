@@ -25,6 +25,53 @@ def utc_now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def load_skill_env_value(root: Path, key: str) -> str:
+    env_file = root / ".bagakit" / "lobster-shell" / "runtime" / "skill-paths.env"
+    if not env_file.is_file():
+        return ""
+    try:
+        lines = env_file.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return ""
+    for raw in lines:
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith("export "):
+            line = line[len("export ") :].strip()
+        if "=" not in line:
+            continue
+        lhs, rhs = line.split("=", 1)
+        if lhs.strip() != key:
+            continue
+        value = rhs.strip()
+        if value.startswith(("'", '"')) and value.endswith(("'", '"')) and len(value) >= 2:
+            value = value[1:-1]
+        return value.strip()
+    return ""
+
+
+def resolve_living_docs_search_script(root: Path) -> Path:
+    env_dir = os.environ.get("BAGAKIT_LIVING_DOCS_SKILL_DIR", "").strip()
+    if not env_dir:
+        env_dir = load_skill_env_value(root, "BAGAKIT_LIVING_DOCS_SKILL_DIR")
+    candidates = []
+    if env_dir:
+        candidates.append(Path(env_dir))
+    candidates.extend(
+        [
+            root / ".codex" / "skills" / "bagakit-living-docs",
+            Path.home() / ".bagakit" / "skills" / "bagakit-living-docs",
+        ]
+    )
+    for base in candidates:
+        script = base / "scripts" / "living-docs-memory.sh"
+        if script.is_file():
+            return script
+    # Return preferred project-local path for error display.
+    return root / ".codex" / "skills" / "bagakit-living-docs" / "scripts" / "living-docs-memory.sh"
+
+
 def ensure_dirs(root: Path) -> dict[str, Path]:
     shell_root = root / ".bagakit" / "lobster-shell"
     paths = {
@@ -38,7 +85,7 @@ def ensure_dirs(root: Path) -> dict[str, Path]:
         "identity": shell_root / "identity.md",
         "ralph_msg": root / ".bagakit" / "long-run" / "ralph-msg.md",
         "run_once": root / ".bagakit" / "lobster-shell" / "scripts" / "run_once.sh",
-        "living_search": root / ".codex" / "skills" / "bagakit-living-docs" / "scripts" / "living-docs-memory.sh",
+        "living_search": resolve_living_docs_search_script(root),
         "memory_inbox": root / "docs" / ".bagakit" / "inbox",
     }
     for key in ("state_dir", "logs_dir", "outbox_dir", "runtime_dir"):
@@ -461,7 +508,7 @@ def run_self_check(args: argparse.Namespace) -> int:
         root / ".bagakit" / "long-run" / "ralphloop-runner.sh",
         root / ".bagakit" / "lobster-shell" / "identity.md",
         root / ".bagakit" / "lobster-shell" / "scripts" / "run_once.sh",
-        root / ".codex" / "skills" / "bagakit-living-docs" / "scripts" / "living-docs-memory.sh",
+        paths["living_search"],
     ]
 
     missing = [str(p) for p in required if not p.exists()]

@@ -5,12 +5,12 @@
   },
   "detection": {
     "status": "ready",
-    "last_reviewed_at": "2026-02-24T17:09:18Z",
-    "reviewed_by": "lobster-shell-v0-bootstrap",
+    "last_reviewed_at": "2026-02-25T06:46:48Z",
+    "reviewed_by": "bagakit-lobster-shell.apply",
     "upstream_systems": [
       "bagakit-ft-default"
     ],
-    "notes": "Bootstrap completed; ft-harness upstream detected and ready for long-run dispatch."
+    "notes": "Lobster-shell apply refreshed detection and stack contracts."
   },
   "adapters": [
     {

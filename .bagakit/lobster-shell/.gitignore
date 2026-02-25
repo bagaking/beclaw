@@ -1,4 +1,5 @@
 state/*.sqlite
 logs/*.log
 runtime/*.log
+runtime/skill-paths.env
 outbox/*.jsonl
