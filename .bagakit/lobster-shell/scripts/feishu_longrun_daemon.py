@@ -31,17 +31,32 @@ def clip_text(text: str, limit: int = 4000) -> str:
     return text[:limit].rstrip() + "\n\n...(truncated)..."
 
 
+def load_lobster_config(root: Path) -> dict[str, Any]:
+    config_file = root / ".bagakit" / "lobster-shell" / "config.json"
+    if not config_file.is_file():
+        return {}
+    try:
+        payload = json.loads(config_file.read_text(encoding="utf-8"))
+    except (json.JSONDecodeError, OSError):
+        return {}
+    return payload if isinstance(payload, dict) else {}
+
+
 def resolve_persona_workspace(root: Path) -> Path | None:
+    config = load_lobster_config(root)
+    configured_workspace = str(config.get("persona_workspace", "") or "").strip()
     env_value = os.environ.get("LOBSTER_PERSONA_WORKSPACE", "").strip()
+
     candidates: list[Path] = []
+    if configured_workspace:
+        configured_path = Path(configured_workspace).expanduser()
+        if not configured_path.is_absolute():
+            configured_path = (root / configured_path).resolve()
+        candidates.append(configured_path)
+    candidates.append(root / ".bagakit" / "lobster-shell" / "persona")
     if env_value:
         candidates.append(Path(env_value).expanduser())
-    candidates.extend(
-        [
-            root / ".bagakit" / "lobster-shell" / "persona",
-            Path.home() / ".openclaw" / "workspace",
-        ]
-    )
+
     for candidate in candidates:
         if not candidate.is_dir():
             continue
