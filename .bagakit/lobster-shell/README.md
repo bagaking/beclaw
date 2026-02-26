@@ -14,7 +14,9 @@ Lobster Shell v0 is an execution shell around bagakit-long-run + bagakit-living-
 - `scripts/bagakit_env.sh`: local skill path bootstrap.
 - `identity.md`: injected identity prompt.
 - Optional persona overlay:
-  - preferred (project-local): put `IDENTITY.md` + `SOUL.md` + `USER.md` into `.bagakit/lobster-shell/persona/`
+  - preferred (project-local): put persona files into `.bagakit/lobster-shell/persona/`
+    - minimum: `IDENTITY.md` + `SOUL.md` + `USER.md`
+    - recommended: also include `AGENTS.md` + `TOOLS.md` + `HEARTBEAT.md` (+ `MEMORY.md` if you have one)
   - optional (still project-controlled): set `persona_workspace` in `.bagakit/lobster-shell/config.json`
   - env `LOBSTER_PERSONA_WORKSPACE` is debug override only.
 

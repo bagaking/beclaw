@@ -75,6 +75,10 @@ def load_persona_overlay(root: Path) -> tuple[str, list[tuple[str, str]]]:
         ("Persona Identity", "IDENTITY.md"),
         ("Persona Soul", "SOUL.md"),
         ("Persona User", "USER.md"),
+        ("Persona Agents", "AGENTS.md"),
+        ("Persona Tools", "TOOLS.md"),
+        ("Persona Heartbeat", "HEARTBEAT.md"),
+        ("Persona Memory", "MEMORY.md"),
     ):
         file_path = workspace / file_name
         if not file_path.is_file():
