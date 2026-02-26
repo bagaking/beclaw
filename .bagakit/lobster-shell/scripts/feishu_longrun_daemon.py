@@ -25,6 +25,52 @@ def utc_now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def clip_text(text: str, limit: int = 4000) -> str:
+    if len(text) <= limit:
+        return text
+    return text[:limit].rstrip() + "\n\n...(truncated)..."
+
+
+def resolve_persona_workspace(root: Path) -> Path | None:
+    env_value = os.environ.get("LOBSTER_PERSONA_WORKSPACE", "").strip()
+    candidates: list[Path] = []
+    if env_value:
+        candidates.append(Path(env_value).expanduser())
+    candidates.extend(
+        [
+            root / ".bagakit" / "lobster-shell" / "persona",
+            Path.home() / ".openclaw" / "workspace",
+        ]
+    )
+    for candidate in candidates:
+        if not candidate.is_dir():
+            continue
+        if any((candidate / name).is_file() for name in ("IDENTITY.md", "SOUL.md", "USER.md")):
+            return candidate
+    return None
+
+
+def load_persona_overlay(root: Path) -> tuple[str, list[tuple[str, str]]]:
+    workspace = resolve_persona_workspace(root)
+    if workspace is None:
+        return "", []
+
+    sections: list[tuple[str, str]] = []
+    for title, file_name in (
+        ("Persona Identity", "IDENTITY.md"),
+        ("Persona Soul", "SOUL.md"),
+        ("Persona User", "USER.md"),
+    ):
+        file_path = workspace / file_name
+        if not file_path.is_file():
+            continue
+        content = file_path.read_text(encoding="utf-8").strip()
+        if not content:
+            continue
+        sections.append((title, clip_text(content)))
+    return str(workspace), sections
+
+
 def load_skill_env_value(root: Path, key: str) -> str:
     env_file = root / ".bagakit" / "lobster-shell" / "runtime" / "skill-paths.env"
     if not env_file.is_file():
@@ -229,10 +275,11 @@ def recall_memory(paths: dict[str, Path], root: Path, query: str, max_results: i
     return out if out else "(no relevant memory found)"
 
 
-def build_injected_message(paths: dict[str, Path], normalized: dict[str, str], recall: str, run_id: str) -> str:
+def build_injected_message(paths: dict[str, Path], root: Path, normalized: dict[str, str], recall: str, run_id: str) -> str:
     identity = ""
     if paths["identity"].exists():
         identity = paths["identity"].read_text(encoding="utf-8").strip()
+    persona_workspace, persona_sections = load_persona_overlay(root)
 
     lines = [
         "# Lobster Shell Injection",
@@ -254,6 +301,10 @@ def build_injected_message(paths: dict[str, Path], normalized: dict[str, str], r
         f"- user_id: {normalized.get('user_id', '') or '-'}",
         f"- received_at: {utc_now_iso()}",
     ]
+    if persona_sections:
+        lines.extend(["", "## Persona Overlay", f"- workspace: {persona_workspace}"])
+        for title, content in persona_sections:
+            lines.extend(["", f"### {title}", content])
     return "\n".join(lines).strip() + "\n"
 
 
@@ -387,7 +438,7 @@ def process_payload(
 
     run_id = f"{dt.datetime.now(dt.timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{normalized['msg_id'][:8]}"
     recall = recall_memory(paths, root, normalized["text"], memory_max_results)
-    injected = build_injected_message(paths, normalized, recall, run_id)
+    injected = build_injected_message(paths, root, normalized, recall, run_id)
     append_to_ralph_msg(paths["ralph_msg"], injected)
 
     run_result = run_once(paths, root, run_id)
@@ -503,6 +554,7 @@ def run_self_check(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
     paths = ensure_dirs(root)
     init_db(paths["db"])
+    persona_workspace, persona_sections = load_persona_overlay(root)
 
     required = [
         root / ".bagakit" / "long-run" / "ralphloop-runner.sh",
@@ -523,6 +575,8 @@ def run_self_check(args: argparse.Namespace) -> int:
                 "db": str(paths["db"]),
                 "outbox": str(paths["results"]),
                 "ralph_msg": str(paths["ralph_msg"]),
+                "persona_workspace": persona_workspace,
+                "persona_sections": [name for name, _ in persona_sections],
             },
             ensure_ascii=False,
         )
