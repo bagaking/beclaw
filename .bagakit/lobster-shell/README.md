@@ -23,9 +23,14 @@ Lobster Shell v0 is an execution shell around bagakit-long-run + bagakit-living-
 ## Quick Start
 1. Export a non-interactive agent command (required by long-run):
    - `export BAGAKIT_AGENT_CMD="codex exec {prompt_text}"`
-2. Start daemon:
-   - `python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --host 127.0.0.1 --port 8765 --secret <token>`
-3. Send POST JSON to `/feishu/event`.
+2. Configure `.bagakit/lobster-shell/config.json` from `.bagakit/lobster-shell/config.example.json`.
+   - By default, the daemon reads `listen_host`, `listen_port`, and `shared_secret` from config.
+3. Start daemon:
+   - `make lobster-shell-daemon`
+   - Direct script equivalent: `python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root .`
+   - Use CLI flags only to override config, for example: `--host 127.0.0.1 --port 8765 --secret <token>`
+   - With Makefile: `make lobster-shell-daemon LOBSTER_SHELL_HOST=127.0.0.1 LOBSTER_SHELL_PORT=8765`
+4. Send POST JSON to `/feishu/event`.
 
 ## Event Contract (normalized)
 The daemon tries to normalize Feishu payload into:

@@ -7,6 +7,7 @@ from pathlib import Path
 
 
 MODULE_PATH = Path(__file__).resolve().parents[1] / "scripts" / "feishu_longrun_daemon.py"
+REPO_ROOT = Path(__file__).resolve().parents[3]
 SPEC = importlib.util.spec_from_file_location("feishu_longrun_daemon", MODULE_PATH)
 daemon = importlib.util.module_from_spec(SPEC)
 assert SPEC.loader is not None
@@ -83,6 +84,19 @@ class LobsterConfigTest(unittest.TestCase):
             self.assertEqual(args.secret, "cli-value")
             self.assertEqual(args.memory_max_results, 3)
             self.assertEqual(args.callback_url, "http://127.0.0.1/cli")
+
+
+class LobsterMakefileWrapperTest(unittest.TestCase):
+    def test_daemon_wrapper_preserves_config_defaults(self) -> None:
+        makefile = (REPO_ROOT / "Makefile").read_text(encoding="utf-8")
+
+        self.assertIn("LOBSTER_SHELL_DAEMON_FLAGS", makefile)
+        self.assertIn("LOBSTER_SHELL_HOST", makefile)
+        self.assertIn("LOBSTER_SHELL_PORT", makefile)
+        self.assertIn("--host $(LOBSTER_SHELL_HOST)", makefile)
+        self.assertIn("--port $(LOBSTER_SHELL_PORT)", makefile)
+        self.assertNotIn("--host 127.0.0.1", makefile)
+        self.assertNotIn("--port 8765", makefile)
 
 
 if __name__ == "__main__":

@@ -1,6 +1,13 @@
 GO ?= go
 GOLANGCI_LINT ?= golangci-lint
 PNPM ?= pnpm
+LOBSTER_SHELL_DAEMON_FLAGS :=
+ifneq ($(strip $(LOBSTER_SHELL_HOST)),)
+LOBSTER_SHELL_DAEMON_FLAGS += --host $(LOBSTER_SHELL_HOST)
+endif
+ifneq ($(strip $(LOBSTER_SHELL_PORT)),)
+LOBSTER_SHELL_DAEMON_FLAGS += --port $(LOBSTER_SHELL_PORT)
+endif
 
 export CODEX_HOME := $(PWD)/.codex
 
@@ -28,6 +35,6 @@ lobster-shell-self-check:
 .PHONY: lobster-shell-self-check
 
 lobster-shell-daemon:
-	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --host 127.0.0.1 --port 8765
+	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . $(LOBSTER_SHELL_DAEMON_FLAGS)
 .PHONY: lobster-shell-daemon
 # BAGAKIT:LOBSTER-SHELL:END
