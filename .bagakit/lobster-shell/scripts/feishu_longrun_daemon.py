@@ -411,7 +411,30 @@ def run_once(paths: dict[str, Path], root: Path, run_id: str) -> dict[str, Any]:
     return payload
 
 
-def write_memory_note(paths: dict[str, Path], normalized: dict[str, str], run_result: dict[str, Any], run_id: str) -> str:
+def portable_path(path: Path, root: Path) -> str:
+    try:
+        return path.resolve().relative_to(root.resolve()).as_posix()
+    except ValueError:
+        return path.name
+
+
+def portable_path_text(value: Any, root: Path) -> str:
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    path = Path(raw)
+    if not path.is_absolute():
+        return path.as_posix()
+    return portable_path(path, root)
+
+
+def write_memory_note(
+    paths: dict[str, Path],
+    root: Path,
+    normalized: dict[str, str],
+    run_result: dict[str, Any],
+    run_id: str,
+) -> str:
     inbox_dir = paths["memory_inbox"]
     if not inbox_dir.is_dir():
         return ""
@@ -435,14 +458,14 @@ def write_memory_note(paths: dict[str, Path], normalized: dict[str, str], run_re
         ## Run Result
         - status: {run_result.get('status', 'unknown')}
         - exit_code: {run_result.get('exit_code', -1)}
-        - run_log: {run_result.get('run_log', '-')}
+        - run_log: {portable_path_text(run_result.get('run_log', '-'), root)}
 
         ## Next
         - Review run logs and decide whether to promote to durable memory.
         """
     ).strip() + "\n"
     note_path.write_text(content, encoding="utf-8")
-    return str(note_path)
+    return portable_path(note_path, root)
 
 
 def append_outbox(paths: dict[str, Path], payload: dict[str, Any]) -> None:
@@ -499,7 +522,7 @@ def process_payload(
     append_to_ralph_msg(paths["ralph_msg"], injected)
 
     run_result = run_once(paths, root, run_id)
-    note_path = write_memory_note(paths, normalized, run_result, run_id)
+    note_path = write_memory_note(paths, root, normalized, run_result, run_id)
 
     result_payload: dict[str, Any] = {
         "timestamp": utc_now_iso(),
@@ -509,7 +532,7 @@ def process_payload(
         "user_id": normalized.get("user_id", ""),
         "status": run_result.get("status", "unknown"),
         "exit_code": int(run_result.get("exit_code", -1)),
-        "run_log": run_result.get("run_log", ""),
+        "run_log": portable_path_text(run_result.get("run_log", ""), root),
         "memory_note": note_path,
     }
 

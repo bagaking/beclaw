@@ -127,15 +127,22 @@ class LobsterProcessPayloadTest(unittest.TestCase):
             root = Path(temp_dir)
             paths = daemon.ensure_dirs(root)
             daemon.init_db(paths["db"])
+            (root / "docs" / ".bagakit" / "inbox").mkdir(parents=True)
 
             daemon.recall_memory = lambda *_args, **_kwargs: "(no relevant memory found)"
             daemon.run_once = lambda _paths, _root, run_id: {
                 "status": "completed",
                 "exit_code": 0,
                 "run_id": run_id,
-                "run_log": "runtime/run.log",
+                "run_log": str(root / ".bagakit" / "lobster-shell" / "runtime" / "run.log"),
             }
-            daemon.post_callback = lambda _url, _payload: "ok:200"
+            callback_payloads = []
+
+            def capture_callback(_url, callback_payload):
+                callback_payloads.append(dict(callback_payload))
+                return "ok:200"
+
+            daemon.post_callback = capture_callback
 
             try:
                 response, status = daemon.process_payload(
@@ -152,11 +159,23 @@ class LobsterProcessPayloadTest(unittest.TestCase):
 
             self.assertEqual(status, 200)
             self.assertEqual(response["callback_status"], "ok:200")
+            self.assertEqual(response["run_log"], ".bagakit/lobster-shell/runtime/run.log")
+            self.assertFalse(Path(response["run_log"]).is_absolute())
+            self.assertEqual(
+                response["memory_note"],
+                f"docs/.bagakit/inbox/howto-lobster-shell-{response['run_id']}.md",
+            )
+            self.assertFalse(Path(response["memory_note"]).is_absolute())
+            self.assertEqual(len(callback_payloads), 1)
+            self.assertEqual(callback_payloads[0]["run_log"], response["run_log"])
+            self.assertEqual(callback_payloads[0]["memory_note"], response["memory_note"])
 
             outbox_lines = paths["results"].read_text(encoding="utf-8").splitlines()
             self.assertEqual(len(outbox_lines), 1)
             outbox_payload = json.loads(outbox_lines[0])
             self.assertEqual(outbox_payload["callback_status"], "ok:200")
+            self.assertEqual(outbox_payload["run_log"], response["run_log"])
+            self.assertEqual(outbox_payload["memory_note"], response["memory_note"])
 
     def test_callback_exception_still_writes_outbox(self) -> None:
         original_recall_memory = daemon.recall_memory
