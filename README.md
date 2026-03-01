@@ -23,13 +23,17 @@ Bagakit long-run loop.
 Run the stable local checks before changing daemon behavior or packaging:
 
 ```sh
-make lobster-shell-self-check
-python3 -m unittest discover -s .bagakit/lobster-shell/tests -p 'test_*.py'
+make validate
 ```
 
+`make validate` runs the daemon self-check and the Lobster Shell unittest suite.
 The self-check uses local files only. It may create ignored runtime artifacts
 under `.bagakit/lobster-shell/state/`, `.bagakit/lobster-shell/runtime/`, and
 `.bagakit/lobster-shell/outbox/`.
+
+There is currently no Go module in this repository, so `go test ./...` is not
+an applicable verification command here. Add it to `make validate` if Go code is
+introduced later.
 
 ## Running Locally
 

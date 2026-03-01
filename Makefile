@@ -34,6 +34,13 @@ lobster-shell-self-check:
 	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . --self-check
 .PHONY: lobster-shell-self-check
 
+lobster-shell-test:
+	python3 -m unittest discover -s .bagakit/lobster-shell/tests -p 'test_*.py'
+.PHONY: lobster-shell-test
+
+validate: lobster-shell-self-check lobster-shell-test
+.PHONY: validate
+
 lobster-shell-daemon:
 	python3 .bagakit/lobster-shell/scripts/feishu_longrun_daemon.py --root . $(LOBSTER_SHELL_DAEMON_FLAGS)
 .PHONY: lobster-shell-daemon
