@@ -3,6 +3,7 @@ import importlib.util
 import json
 import tempfile
 import unittest
+import urllib.error
 from pathlib import Path
 
 
@@ -100,6 +101,23 @@ class LobsterMakefileWrapperTest(unittest.TestCase):
 
 
 class LobsterProcessPayloadTest(unittest.TestCase):
+    def test_post_callback_reports_exception_type_only(self) -> None:
+        original_urlopen = daemon.urllib.request.urlopen
+
+        def failing_urlopen(_request, timeout):
+            raise urllib.error.URLError("callback URL refused by transport")
+
+        daemon.urllib.request.urlopen = failing_urlopen
+
+        try:
+            status = daemon.post_callback("http://127.0.0.1/callback", {"ok": True})
+        finally:
+            daemon.urllib.request.urlopen = original_urlopen
+
+        self.assertEqual(status, "error:URLError")
+        self.assertNotIn("callback", status)
+        self.assertNotIn("transport", status)
+
     def test_outbox_records_callback_status(self) -> None:
         original_recall_memory = daemon.recall_memory
         original_run_once = daemon.run_once
