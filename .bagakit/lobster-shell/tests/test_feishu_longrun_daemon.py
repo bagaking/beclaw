@@ -118,6 +118,31 @@ class LobsterProcessPayloadTest(unittest.TestCase):
         self.assertNotIn("callback", status)
         self.assertNotIn("transport", status)
 
+    def test_post_callback_reports_http_error_status_only(self) -> None:
+        original_urlopen = daemon.urllib.request.urlopen
+
+        def failing_urlopen(_request, timeout):
+            raise urllib.error.HTTPError(
+                url="http://private.example/callback?redacted-param=x",
+                code=403,
+                msg="Forbidden private",
+                hdrs=None,
+                fp=None,
+            )
+
+        daemon.urllib.request.urlopen = failing_urlopen
+
+        try:
+            status = daemon.post_callback("http://127.0.0.1/callback", {"ok": True})
+        finally:
+            daemon.urllib.request.urlopen = original_urlopen
+
+        self.assertEqual(status, "error:HTTPError:403")
+        self.assertNotIn("private.example", status)
+        self.assertNotIn("redacted-param", status)
+        self.assertNotIn("Forbidden", status)
+        self.assertNotIn("private", status)
+
     def test_outbox_records_callback_status(self) -> None:
         original_recall_memory = daemon.recall_memory
         original_run_once = daemon.run_once

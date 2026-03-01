@@ -484,6 +484,8 @@ def post_callback(url: str, payload: dict[str, Any]) -> str:
     try:
         with urllib.request.urlopen(req, timeout=8) as resp:
             return f"ok:{resp.status}"
+    except urllib.error.HTTPError as exc:
+        return f"error:{type(exc).__name__}:{exc.code}"
     except (urllib.error.URLError, TimeoutError) as exc:
         return f"error:{type(exc).__name__}"
 
