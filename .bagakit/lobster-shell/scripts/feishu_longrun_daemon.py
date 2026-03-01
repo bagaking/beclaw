@@ -20,6 +20,10 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+DEFAULT_HOST = "127.0.0.1"
+DEFAULT_PORT = 8765
+DEFAULT_MEMORY_MAX_RESULTS = 5
+
 
 def utc_now_iso() -> str:
     return dt.datetime.now(dt.timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -40,6 +44,40 @@ def load_lobster_config(root: Path) -> dict[str, Any]:
     except (json.JSONDecodeError, OSError):
         return {}
     return payload if isinstance(payload, dict) else {}
+
+
+def _config_str(config: dict[str, Any], key: str, default: str) -> str:
+    value = config.get(key, default)
+    if value is None:
+        return default
+    return str(value)
+
+
+def _config_int(config: dict[str, Any], key: str, default: int) -> int:
+    value = config.get(key, default)
+    if value in (None, ""):
+        return default
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return default
+
+
+def apply_lobster_config(args: argparse.Namespace) -> argparse.Namespace:
+    root = Path(args.root).resolve()
+    config = load_lobster_config(root)
+    args.host = args.host if args.host is not None else _config_str(config, "listen_host", DEFAULT_HOST)
+    args.port = args.port if args.port is not None else _config_int(config, "listen_port", DEFAULT_PORT)
+    args.secret = args.secret if args.secret is not None else _config_str(config, "shared_secret", "")
+    args.memory_max_results = (
+        args.memory_max_results
+        if args.memory_max_results is not None
+        else _config_int(config, "memory_max_results", DEFAULT_MEMORY_MAX_RESULTS)
+    )
+    args.callback_url = (
+        args.callback_url if args.callback_url is not None else _config_str(config, "feishu_reply_webhook", "")
+    )
+    return args
 
 
 def resolve_persona_workspace(root: Path) -> Path | None:
@@ -622,11 +660,11 @@ def run_ingest_file(args: argparse.Namespace) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Lobster Shell Feishu -> LongRun bridge")
     parser.add_argument("--root", default=".", help="project root")
-    parser.add_argument("--host", default="127.0.0.1", help="listen host")
-    parser.add_argument("--port", type=int, default=8765, help="listen port")
-    parser.add_argument("--secret", default="", help="shared secret read from X-Lobster-Token header")
-    parser.add_argument("--memory-max-results", type=int, default=5)
-    parser.add_argument("--callback-url", default="")
+    parser.add_argument("--host", default=None, help="listen host")
+    parser.add_argument("--port", type=int, default=None, help="listen port")
+    parser.add_argument("--secret", default=None, help="shared secret read from X-Lobster-Token header")
+    parser.add_argument("--memory-max-results", type=int, default=None)
+    parser.add_argument("--callback-url", default=None)
     parser.add_argument("--ingest-file", default="", help="process one local payload file and exit")
     parser.add_argument("--self-check", action="store_true", help="verify local runtime prerequisites")
     return parser
@@ -634,7 +672,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> int:
     parser = build_parser()
-    args = parser.parse_args()
+    args = apply_lobster_config(parser.parse_args())
 
     if args.self_check:
         return run_self_check(args)
