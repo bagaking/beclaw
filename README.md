@@ -68,3 +68,15 @@ Keep committed files portable and reviewable:
   `.bagakit/lobster-shell/outbox/`.
 - Prefer standard-library tests and local fixtures for CI so the repository does
   not depend on live Feishu services or a locally installed coding agent.
+
+## License and Distribution Boundary
+
+This repository currently has no repository-level open source license. Do not
+treat the full workspace as a reusable distribution by default. Scripts,
+templates, or subpackages that should be reused elsewhere should be split out or
+given an explicit license and distribution statement.
+
+Agent state and workspace-specific materials are not default reusable assets.
+This includes persona overlays, local config, mailbox, memory, session records,
+archives, and harness artifacts. Review and separate any reusable runtime asset
+before publishing or vendoring it outside this workspace.
