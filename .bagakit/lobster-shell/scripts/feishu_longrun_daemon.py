@@ -515,7 +515,10 @@ def process_payload(
 
     callback_status = "skipped"
     if callback_url.strip():
-        callback_status = post_callback(callback_url.strip(), result_payload)
+        try:
+            callback_status = post_callback(callback_url.strip(), result_payload)
+        except Exception as exc:  # noqa: BLE001 - callback failures must not suppress local audit records.
+            callback_status = f"error:{type(exc).__name__}"
     result_payload["callback_status"] = callback_status
     append_outbox(paths, result_payload)
 
