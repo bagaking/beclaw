@@ -4,12 +4,12 @@
 - Clarification status: complete
 
 ## Goal Snapshot
-- 评估“写一个通用 skill，让任意加载该 skill 的 coding agent 能做 `/Users/bytedance/proj/priv/bagaking/openclaw` 能做的所有事情”的可行性。
+- 评估“写一个通用 skill，让任意加载该 skill 的 coding agent 能做 `openclaw` 能做的所有事情”的可行性。
 - 给出关键问题清单、可执行路线、以及风险边界。
 
 ## Source Markdown
 - 用户问题（当前会话）：`这个项目里我想写一个 skill...可行吗? 需要解决哪些问题`
-- ` /Users/bytedance/proj/priv/bagaking/openclaw/README.md`（能力范围与系统边界）
+- `openclaw README`（能力范围与系统边界）
 
 ## Scope and Success Criteria
 - Scope:

@@ -27,8 +27,8 @@ key_insights:
   - "先规范后实现能显著降低跨宿主异构的失败概率。"
   - "安全与权限模型必须前置为一级约束，而非补丁。"
 references:
-  - "/Users/bytedance/proj/priv/bagaking/openclaw/README.md"
-  - "/Users/bytedance/proj/priv/bagaking/beclaw/.codex/skills/bagakit-brainstorm/SKILL.md"
+  - "openclaw README"
+  - ".codex/skills/bagakit-brainstorm/SKILL.md"
 scoring_rules:
   peer_score_scale: "0~10"
   experiment_bonus_scale: "1~5"
@@ -122,7 +122,7 @@ scoring_rules:
 
 ## 用户评判与确认
 
-- 评判人：bytedance（本轮提问方）
+- 评判人：本轮提问方
 - 评判结论（`approved` / `changes_requested`）：approved
 - 评判意见摘要：需要明确可行边界与问题清单，本报告已覆盖。
 - 回填要求：frontmatter 已设置 `user_review_status: approved` 并填写 `user_review_note`。
