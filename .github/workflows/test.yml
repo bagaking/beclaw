@@ -1,0 +1,23 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  lobster-shell:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run Lobster Shell self-check
+        run: make lobster-shell-self-check
+
+      - name: Run Lobster Shell unit tests
+        run: python3 -m unittest discover -s .bagakit/lobster-shell/tests -p 'test_*.py'
