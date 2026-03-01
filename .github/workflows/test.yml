@@ -19,8 +19,5 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run Lobster Shell self-check
-        run: make lobster-shell-self-check
-
-      - name: Run Lobster Shell unit tests
-        run: python3 -m unittest discover -s .bagakit/lobster-shell/tests -p 'test_*.py'
+      - name: Run validation
+        run: make validate
