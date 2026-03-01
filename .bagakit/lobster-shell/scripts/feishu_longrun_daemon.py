@@ -512,12 +512,12 @@ def process_payload(
         "run_log": run_result.get("run_log", ""),
         "memory_note": note_path,
     }
-    append_outbox(paths, result_payload)
 
     callback_status = "skipped"
     if callback_url.strip():
         callback_status = post_callback(callback_url.strip(), result_payload)
     result_payload["callback_status"] = callback_status
+    append_outbox(paths, result_payload)
 
     status_code = HTTPStatus.OK if result_payload["exit_code"] == 0 else HTTPStatus.INTERNAL_SERVER_ERROR
     return result_payload, status_code

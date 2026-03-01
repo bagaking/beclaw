@@ -99,5 +99,47 @@ class LobsterMakefileWrapperTest(unittest.TestCase):
         self.assertNotIn("--port 8765", makefile)
 
 
+class LobsterProcessPayloadTest(unittest.TestCase):
+    def test_outbox_records_callback_status(self) -> None:
+        original_recall_memory = daemon.recall_memory
+        original_run_once = daemon.run_once
+        original_post_callback = daemon.post_callback
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            paths = daemon.ensure_dirs(root)
+            daemon.init_db(paths["db"])
+
+            daemon.recall_memory = lambda *_args, **_kwargs: "(no relevant memory found)"
+            daemon.run_once = lambda _paths, _root, run_id: {
+                "status": "completed",
+                "exit_code": 0,
+                "run_id": run_id,
+                "run_log": "runtime/run.log",
+            }
+            daemon.post_callback = lambda _url, _payload: "ok:200"
+
+            try:
+                response, status = daemon.process_payload(
+                    root=root,
+                    paths=paths,
+                    payload={"message_id": "msg-callback", "text": "ship it"},
+                    memory_max_results=1,
+                    callback_url="http://127.0.0.1/callback",
+                )
+            finally:
+                daemon.recall_memory = original_recall_memory
+                daemon.run_once = original_run_once
+                daemon.post_callback = original_post_callback
+
+            self.assertEqual(status, 200)
+            self.assertEqual(response["callback_status"], "ok:200")
+
+            outbox_lines = paths["results"].read_text(encoding="utf-8").splitlines()
+            self.assertEqual(len(outbox_lines), 1)
+            outbox_payload = json.loads(outbox_lines[0])
+            self.assertEqual(outbox_payload["callback_status"], "ok:200")
+
+
 if __name__ == "__main__":
     unittest.main()
